@@ -49,7 +49,8 @@ run_http_frward() {
 }
 
 run_xybot() {
-  cp -r xybot "${injector_box_dir}/root/"
+  echo debug_cp_xybot
+  cp -r XYBot "${injector_box_dir}/root"
 }
 
 injector_wechat_bot() {
@@ -107,7 +108,7 @@ build_docker_image() {
 # Script execution
 setup_directory
 update_git_repo "https://github.com/sayue2019/injector-box" "$injector_box_dir"
-update_git_repo "https://github.com/sayue2019/wechat-box" "$wechat_box_dir"
+update_git_repo "https://github.com/HenryXiaoYang/wechat-box" "$wechat_box_dir"
 download_file "https://github.com/tom-snow/wechat-windows-versions/releases/download/v${wechat_version}/WeChatSetup-${wechat_version}.exe" "${wechat_box_dir}/root/WeChatSetup.exe"
 download_file "https://github.com/sayue2019/go-http-forward/releases/download/win86/http_forwarder.exe" "${injector_box_dir}/root/bin/http_forwarder.exe"
 
@@ -119,6 +120,8 @@ run_vnc_auth
 if [ "$ENABLE_HTTP_FORWARD" = true ]; then
     run_http_frward
 fi
+
+run_xybot
 
 injector_select "$injector_name"
 build_docker_image
