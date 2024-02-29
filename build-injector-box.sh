@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
 # Variables
-wechat_version="3.9.2.23" # wechat版本
-injector_name="wechat-bot" # 需要注入的wechat服务，可选：comwechatrobot(3.7.0.30)，wechat-bot(3.9.2.23), wxhelper(3.9.2.23)
-ENABLE_HTTP_FORWARD=true  # Set to false to disable HTTP forward setup
+wechat_version="3.6.0.18" # wechat版本
+injector_name="xybot" # 需要注入的wechat服务，可选：comwechatrobot(3.7.0.30)，wechat-bot(3.9.2.23), wxhelper(3.9.2.23)
+ENABLE_HTTP_FORWARD=false  # Set to false to disable HTTP forward setup
 
 injector_box_dir="docker_buiding/injector-box"
 wechat_box_dir="${injector_box_dir}/wechat-box"
+
+xybot_dir="XYBot"
 
 # Functions
 setup_directory() {
@@ -46,6 +48,10 @@ run_http_frward() {
     cp forward/inj-entrypoint.sh "${injector_box_dir}/root/"
 }
 
+run_xybot() {
+  cp -r xybot "${injector_box_dir}/root/"
+}
+
 injector_wechat_bot() {
     cp bin_deps/wechat-bot/funtool_wx=3.9.2.23.exe "${injector_box_dir}/root/bin/"
     cp bin_deps/wechat-bot/inject-dll "${injector_box_dir}/root/bin"
@@ -67,6 +73,10 @@ injector_comwechatrobot() {
     cp bin_deps/comwechatrobot/http/wxDriver64.lib "${injector_box_dir}/root/drive_c/injector/"
 }
 
+injector_xybot() {
+  cp bin_deps/xybot/wechat-robot-wx3.6.0.18.dll "${injector_box_dir}/root/drive_c/injector/auto.dll"
+}
+
 # Function to select the injector based on injname variable
 injector_select() {
     local injector_name=$1
@@ -80,6 +90,9 @@ injector_select() {
             ;;
         "comwechatrobot")
             injector_comwechatrobot
+            ;;
+        "xybot")
+            injector_xybot
             ;;
         *)
             echo "Invalid injector name: $injector_name"
@@ -97,6 +110,9 @@ update_git_repo "https://github.com/sayue2019/injector-box" "$injector_box_dir"
 update_git_repo "https://github.com/sayue2019/wechat-box" "$wechat_box_dir"
 download_file "https://github.com/tom-snow/wechat-windows-versions/releases/download/v${wechat_version}/WeChatSetup-${wechat_version}.exe" "${wechat_box_dir}/root/WeChatSetup.exe"
 download_file "https://github.com/sayue2019/go-http-forward/releases/download/win86/http_forwarder.exe" "${injector_box_dir}/root/bin/http_forwarder.exe"
+
+update_git_repo "https://github.com/HenryXiaoYang/XYBot" "$xybot_dir"
+
 run_vnc_auth
 
 # Run HTTP forward setup if enabled
